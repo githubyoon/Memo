@@ -6,6 +6,7 @@ use std::io;
 fn main() {
     let home = env::var("USERPROFILE").expect("USERPROFILE 환경변수 없음");
     let path = Path::new(&home).join("Memo.json");
+    let version = "0.2.0";
 
     if !path.exists() {
         fs::write(&path, "[]").expect("파일 생성 실패");
@@ -31,11 +32,15 @@ fn main() {
                 });
             memo_delete(&path, index).expect("메모 삭제 실패");
         }
+        Some("version") => {
+            println!("Memo {}" , version);
+        }
         _ => {
             println!("사용법:");
             println!("  memo add <내용>");
             println!("  memo list");
             println!("  memo delete <번호>");
+            println!("  memo version")
         }
     }
 }
