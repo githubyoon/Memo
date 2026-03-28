@@ -1,48 +1,69 @@
+mod language;
+
 use std::path::Path;
 use std::fs;
 use std::env;
 use std::io;
 
 fn main() {
-    let home = env::var("USERPROFILE").expect("USERPROFILE 환경변수 없음");
+    let lang = get_lang();
+    let lang = lang.as_str();
+
+    let home = env::var("USERPROFILE")
+        .expect(language::get(lang, "USERPROFILE_NOT_FOUND"));
+
     let path = Path::new(&home).join("Memo.json");
-    let version = "0.2.0";
+    let version = "0.3.0";
 
     if !path.exists() {
-        fs::write(&path, "[]").expect("파일 생성 실패");
-        println!("파일 생성 완료");
+        fs::write(&path, "[]")
+            .expect(language::get(lang, "CREATE_FILE_FAIL"));
+        println!("{}", language::get(lang, "CREATE_FILE_COMPLETE"));
     }
 
     let args: Vec<String> = env::args().collect();
 
     match args.get(1).map(|s| s.as_str()) {
         Some("add") => {
-            let content = get_arg(&args, 2, "사용법: memo add <내용>");
-            memo_add(&path, &content).expect("메모 추가 실패");
+            let content = get_arg(&args, 2, language::get(lang, "USAGE_ADD"));
+            memo_add(&path, &content, lang)
+                .expect(language::get(lang, "MEMO_ADD_FAIL"));
         }
         Some("list") => {
-            memo_list(&path).expect("메모 목록 실패");
+            memo_list(&path, lang)
+                .expect(language::get(lang, "MEMO_LIST_FAIL"));
         }
         Some("delete") => {
-            let index = get_arg(&args, 2, "사용법: memo delete <번호>")
+            let index = get_arg(&args, 2, language::get(lang, "USAGE_DELETE"))
                 .parse::<usize>()
                 .unwrap_or_else(|_| {
-                    println!("숫자를 입력해줘");
+                    println!("{}", language::get(lang, "NEED_NUMBER"));
                     std::process::exit(1);
                 });
-            memo_delete(&path, index).expect("메모 삭제 실패");
+
+            memo_delete(&path, index, lang)
+                .expect(language::get(lang, "MEMO_DELETE_FAIL"));
         }
         Some("version") => {
-            println!("Memo {}" , version);
+            println!("Memo {}", version);
         }
         _ => {
-            println!("사용법:");
-            println!("  memo add <내용>");
-            println!("  memo list");
-            println!("  memo delete <번호>");
-            println!("  memo version")
+            println!("{}", language::get(lang, "USAGE"));
         }
     }
+}
+
+fn get_lang() -> String {
+    let path = "language.txt";
+
+    if !std::path::Path::new(path).exists() {
+        fs::write(path, "kr").ok();
+    }
+
+    fs::read_to_string(path)
+        .unwrap_or("kr".to_string())
+        .trim()
+        .to_string()
 }
 
 fn get_arg(args: &[String], index: usize, msg: &str) -> String {
@@ -52,9 +73,9 @@ fn get_arg(args: &[String], index: usize, msg: &str) -> String {
     })
 }
 
-fn memo_add(path: &Path, content: &str) -> io::Result<()> {
+fn memo_add(path: &Path, content: &str, lang: &str) -> io::Result<()> {
     let data = fs::read_to_string(path)?;
-    let mut memos: Vec<serde_json::Value> = serde_json::from_str(&data).unwrap();
+    let mut memos: Vec<serde_json::Value> = serde_json::from_str(&data)?;
 
     let id = memos.len() + 1;
     memos.push(serde_json::json!({
@@ -62,43 +83,42 @@ fn memo_add(path: &Path, content: &str) -> io::Result<()> {
         "content": content
     }));
 
-    fs::write(path, serde_json::to_string_pretty(&memos).unwrap())?;
-    println!("{}번 메모 추가됨: {}", id, content);
+    fs::write(path, serde_json::to_string_pretty(&memos)?)?;
+    println!("{}", language::memo_added(lang, id, content));
     Ok(())
 }
 
-fn memo_list(path: &Path) -> io::Result<()> {
+fn memo_list(path: &Path, lang: &str) -> io::Result<()> {
     let data = fs::read_to_string(path)?;
-    let memos: Vec<serde_json::Value> = serde_json::from_str(&data).unwrap();
+    let memos: Vec<serde_json::Value> = serde_json::from_str(&data)?;
 
     if memos.is_empty() {
-        println!("메모가 없어요");
+        println!("{}", language::get(lang, "NO_MEMO"));
         return Ok(());
     }
 
     for memo in &memos {
-        println!("{}번: {}", memo["id"], memo["content"]);
+        println!("{}: {}", memo["id"], memo["content"]);
     }
     Ok(())
 }
 
-fn memo_delete(path: &Path, index: usize) -> io::Result<()> {
+fn memo_delete(path: &Path, index: usize, lang: &str) -> io::Result<()> {
     let data = fs::read_to_string(path)?;
-    let mut memos: Vec<serde_json::Value> = serde_json::from_str(&data).unwrap();
+    let mut memos: Vec<serde_json::Value> = serde_json::from_str(&data)?;
 
     if index == 0 || index > memos.len() {
-        println!("없는 번호예요");
+        println!("{}", language::get(lang, "INVALID_NUMBER"));
         return Ok(());
     }
 
     memos.remove(index - 1);
 
-    // 삭제 후 id 재정렬
     for (i, memo) in memos.iter_mut().enumerate() {
         memo["id"] = serde_json::json!(i + 1);
     }
 
-    fs::write(path, serde_json::to_string_pretty(&memos).unwrap())?;
-    println!("{}번 메모 삭제됨", index);
+    fs::write(path, serde_json::to_string_pretty(&memos)?)?;
+    println!("{}", language::memo_deleted(lang, index));
     Ok(())
 }
