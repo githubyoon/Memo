@@ -13,7 +13,7 @@ fn main() {
         .expect(language::get(lang, "USERPROFILE_NOT_FOUND"));
 
     let path = Path::new(&home).join("Memo.json");
-    let version = "0.3.0";
+    let version = "Beta 0.4.0";
 
     if !path.exists() {
         fs::write(&path, "[]")
@@ -47,11 +47,33 @@ fn main() {
         Some("version") => {
             println!("Memo {}", version);
         }
+        Some("settings") => {
+            match args.get(2).map(|s| s.as_str()) {
+                Some("language") => {
+                    let value = get_arg(&args, 3, language::get(lang, "USAGE_SETTINGS_LANG"));
+                    
+                    match value.as_str() {
+                        "kr" | "en" => {
+                            fs::write("language.txt", &value)
+                                .expect(language::get(lang, "SETTINGS_SAVE_FAIL"));
+                            println!("{}", language::get(&value, "SETTINGS_SAVED"));
+                        }
+                        _ => {
+                            println!("{}", language::get(lang, "INVALID_LANG"));
+                        }
+                    }
+                }
+                _ => {  // "lang"이 아니거나, 아예 인자가 없을 때
+                    println!("{}", language::get(lang, "USAGE_SETTINGS"));
+                }
+            }
+        }
         _ => {
             println!("{}", language::get(lang, "USAGE"));
         }
     }
 }
+
 
 fn get_lang() -> String {
     let path = "language.txt";
@@ -65,6 +87,7 @@ fn get_lang() -> String {
         .trim()
         .to_string()
 }
+
 
 fn get_arg(args: &[String], index: usize, msg: &str) -> String {
     args.get(index).cloned().unwrap_or_else(|| {
