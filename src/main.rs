@@ -13,7 +13,7 @@ fn main() {
         .expect(language::get(lang, "USERPROFILE_NOT_FOUND"));
 
     let path = Path::new(&home).join("Memo.json");
-    let version = "Beta 0.4.0";
+    let version = "Beta 0.4.1";
 
     if !path.exists() {
         fs::write(&path, "[]")
@@ -44,7 +44,7 @@ fn main() {
             memo_delete(&path, index, lang)
                 .expect(language::get(lang, "MEMO_DELETE_FAIL"));
         }
-        Some("version") => {
+        Some("-v") => {
             println!("Memo {}", version);
         }
         Some("settings") => {
