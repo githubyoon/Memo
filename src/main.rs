@@ -5,6 +5,7 @@ use std::fs;
 use std::env;
 use std::io;
 
+
 fn main() {
     let lang = get_lang();
     let lang = lang.as_str();
@@ -13,7 +14,7 @@ fn main() {
         .expect(language::get(lang, "USERPROFILE_NOT_FOUND"));
 
     let path = Path::new(&home).join("Memo.json");
-    let version = "Beta 0.4.1";
+    
 
     if !path.exists() {
         fs::write(&path, "[]")
@@ -44,8 +45,14 @@ fn main() {
             memo_delete(&path, index, lang)
                 .expect(language::get(lang, "MEMO_DELETE_FAIL"));
         }
+        Some("version") => {
+            version();
+        }
         Some("-v") => {
-            println!("Memo {}", version);
+            version();
+        }
+        Some("ver") => {
+            version();
         }
         Some("settings") => {
             match args.get(2).map(|s| s.as_str()) {
@@ -144,4 +151,8 @@ fn memo_delete(path: &Path, index: usize, lang: &str) -> io::Result<()> {
     fs::write(path, serde_json::to_string_pretty(&memos)?)?;
     println!("{}", language::memo_deleted(lang, index));
     Ok(())
+}
+fn version() {
+    let version = "Beta 0.4.2";
+    println!("Memo ({})", version);
 }
