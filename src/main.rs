@@ -14,7 +14,7 @@ fn main() {
         .expect(language::get(lang, "USERPROFILE_NOT_FOUND"));
 
     let path = Path::new(&home).join("Memo.json");
-    
+
 
     if !path.exists() {
         fs::write(&path, "[]")
@@ -35,6 +35,17 @@ fn main() {
                 .expect(language::get(lang, "MEMO_LIST_FAIL"));
         }
         Some("delete") => {
+            let index = get_arg(&args, 2, language::get(lang, "USAGE_DELETE"))
+                .parse::<usize>()
+                .unwrap_or_else(|_| {
+                    println!("{}", language::get(lang, "NEED_NUMBER"));
+                    std::process::exit(1);
+                });
+
+            memo_delete(&path, index, lang)
+                .expect(language::get(lang, "MEMO_DELETE_FAIL"));
+        }
+        Some("del") => {
             let index = get_arg(&args, 2, language::get(lang, "USAGE_DELETE"))
                 .parse::<usize>()
                 .unwrap_or_else(|_| {
