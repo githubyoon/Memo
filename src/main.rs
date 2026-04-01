@@ -4,7 +4,7 @@ use std::path::Path;
 use std::fs;
 use std::env;
 use std::io;
-
+use std::io::stdin;
 
 fn main() {
     let lang = get_lang();
@@ -12,8 +12,12 @@ fn main() {
 
     let home = env::var("USERPROFILE")
         .expect(language::get(lang, "USERPROFILE_NOT_FOUND"));
+    let memo_dir = Path::new(&home).join(".memo");
 
-    let path = Path::new(&home).join("Memo.json");
+    fs::create_dir_all(&memo_dir)
+        .expect(language::get(lang, "CREATE_DIR_FAIL"));
+
+    let path = memo_dir.join("Memo.json");
 
 
     if !path.exists() {
@@ -34,18 +38,7 @@ fn main() {
             memo_list(&path, lang)
                 .expect(language::get(lang, "MEMO_LIST_FAIL"));
         }
-        Some("delete") => {
-            let index = get_arg(&args, 2, language::get(lang, "USAGE_DELETE"))
-                .parse::<usize>()
-                .unwrap_or_else(|_| {
-                    println!("{}", language::get(lang, "NEED_NUMBER"));
-                    std::process::exit(1);
-                });
-
-            memo_delete(&path, index, lang)
-                .expect(language::get(lang, "MEMO_DELETE_FAIL"));
-        }
-        Some("del") => {
+        Some("delete") | Some("del") => {
             let index = get_arg(&args, 2, language::get(lang, "USAGE_DELETE"))
                 .parse::<usize>()
                 .unwrap_or_else(|_| {
@@ -69,11 +62,22 @@ fn main() {
             match args.get(2).map(|s| s.as_str()) {
                 Some("language") => {
                     let value = get_arg(&args, 3, language::get(lang, "USAGE_SETTINGS_LANG"));
-                    
+
                     match value.as_str() {
                         "kr" | "en" => {
-                            fs::write("language.txt", &value)
+                            let home = env::var("USERPROFILE")
+                                .expect(language::get(lang, "USERPROFILE_NOT_FOUND"));
+
+                            let memo_dir = Path::new(&home).join(".memo");
+
+                            fs::create_dir_all(&memo_dir)
+                                .expect(language::get(lang, "CREATE_DIR_FAIL"));
+
+                            let lang_path = memo_dir.join("language.txt");
+
+                            fs::write(&lang_path, &value)
                                 .expect(language::get(lang, "SETTINGS_SAVE_FAIL"));
+
                             println!("{}", language::get(&value, "SETTINGS_SAVED"));
                         }
                         _ => {
@@ -86,6 +90,27 @@ fn main() {
                 }
             }
         }
+        Some("reset") => {
+            println!("{}", language::get(lang, "CHECK_MEMO_RESET"));
+
+            let mut input = String::new();
+
+            stdin()
+                .read_line(&mut input)
+                .expect(language::get(lang, "FAIL_TO_READ_INPUT"));
+
+            let input = input.trim(); // 🔥 그 다음 trim
+
+            if input.eq_ignore_ascii_case("y") {
+                memo_reset(&path, lang);
+            } else if input.eq_ignore_ascii_case("n") {
+                return;
+            }
+            else {
+                println!("{}", language::get(lang, "WRONG_ANSWER"));
+            }
+        }
+
         _ => {
             println!("{}", language::get(lang, "USAGE"));
         }
@@ -94,18 +119,26 @@ fn main() {
 
 
 fn get_lang() -> String {
-    let path = "language.txt";
+    let home = env::var("USERPROFILE")
+        .unwrap_or_else(|_| ".".to_string());
 
-    if !std::path::Path::new(path).exists() {
-        fs::write(path, "kr").ok();
+    let memo_dir = Path::new(&home).join(".memo");
+
+    // 폴더 없으면 생성
+    fs::create_dir_all(&memo_dir).ok();
+
+    let lang_path = memo_dir.join("language.txt");
+
+    // 파일 없으면 기본값 생성
+    if !lang_path.exists() {
+        fs::write(&lang_path, "kr").ok();
     }
 
-    fs::read_to_string(path)
+    fs::read_to_string(&lang_path)
         .unwrap_or("kr".to_string())
         .trim()
         .to_string()
 }
-
 
 fn get_arg(args: &[String], index: usize, msg: &str) -> String {
     args.get(index).cloned().unwrap_or_else(|| {
@@ -164,6 +197,14 @@ fn memo_delete(path: &Path, index: usize, lang: &str) -> io::Result<()> {
     Ok(())
 }
 fn version() {
-    let version = "Beta 0.4.2";
+    let version = "Beta 0.5.3";
     println!("Memo ({})", version);
+}
+fn memo_reset(path: &std::path::Path, lang: &str) {
+    if let Err(_) = std::fs::write(path, "[]") {
+        println!("{}", language::get(lang, "RESET_FAIL"));
+        return;
+    }
+
+    println!("{}", language::get(lang, "RESET_SUCCESS"));
 }

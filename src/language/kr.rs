@@ -1,9 +1,12 @@
 pub const CREATE_FILE_FAIL: &str = "파일 생성 실패";
 pub const CREATE_FILE_COMPLETE: &str = "파일 생성 완료";
+pub const CREATE_DIR_FAIL: &str = "폴더 생성에 실패했습니다.";
 
 pub const USAGE_ADD: &str = "사용법: memo add <내용>";
 pub const USAGE_DELETE: &str = "사용법: memo delete <번호>";
-pub const USAGE: &str = "사용법:\n  memo add <내용>\n  memo list\n  memo delete <번호>\n  memo version\n  memo settings <설정>";
+
+// tab 한번 space 한번
+pub const USAGE: &str = "사용법:\n  memo add <내용>\n  memo list\n  memo delete <번호>\n  memo version\n  memo settings <설정>\n  memo reset";
 
 pub const MEMO_ADD_FAIL: &str = "메모 추가 실패";
 pub const MEMO_LIST_FAIL: &str = "메모 목록 실패";
@@ -23,3 +26,9 @@ pub const SETTINGS_SAVED: &str = "설정이 저장되었습니다";
 pub const SETTINGS_SAVE_FAIL: &str = "설정 저장 실패";
 pub const INVALID_LANG: &str = "지원하지 않는 언어입니다";
 pub const USAGE_SETTINGS_LANG: &str = "사용법: memo settings language [kr|en]";
+
+pub const CHECK_MEMO_RESET: &str = "모든 메모를 삭제하시겠습니까? (y/n)";
+pub const RESET_FAIL: &str = "메모 초기화에 실패했습니다.";
+pub const RESET_SUCCESS: &str = "모든 메모가 삭제되었습니다.";
+pub const FAIL_TO_READ_INPUT: &str = "입력을 읽는 데 실패했습니다.";
+pub const WRONG_ANSWER: &str = "잘못된 입력입니다.";
