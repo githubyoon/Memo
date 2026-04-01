@@ -206,5 +206,5 @@ fn memo_reset(path: &std::path::Path, lang: &str) {
         return;
     }
 
-    println!("{}", language::get(lang, "RESET_SUCCESS"));
+    println!("{}", language::get(lang, "RESET_SUCCESS"));  
 }
