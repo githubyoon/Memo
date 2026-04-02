@@ -5,7 +5,7 @@ pub const USAGE_ADD: &str = "Usage: memo add <text>";
 pub const USAGE_DELETE: &str = "Usage: memo delete <index>";
 
 // tab 한번 space 한번
-pub const USAGE: &str = "Usage:\n  memo add <text>\n  memo list\n  memo delete <index>\n  memo version\n  memo settings <setting>\n  memo reset";
+pub const USAGE: &str = "Usage:\n  memo add <text>\n  memo list\n  memo delete <index>\n  memo version\n  memo settings <setting>\n  memo reset\n    memo repo | github";
 
 pub const MEMO_ADD_FAIL: &str = "Failed to add memo";
 pub const MEMO_LIST_FAIL: &str = "Failed to list memos";

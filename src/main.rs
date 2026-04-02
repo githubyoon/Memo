@@ -110,6 +110,9 @@ fn main() {
                 println!("{}", language::get(lang, "WRONG_ANSWER"));
             }
         }
+        Some("repo") | Some("github") => {
+            open_repo();
+        }
 
         _ => {
             println!("{}", language::get(lang, "USAGE"));
@@ -197,7 +200,7 @@ fn memo_delete(path: &Path, index: usize, lang: &str) -> io::Result<()> {
     Ok(())
 }
 fn version() {
-    let version = "Beta 0.5.3";
+    let version = "Beta 0.5.4";
     println!("Memo ({})", version);
 }
 fn memo_reset(path: &std::path::Path, lang: &str) {
@@ -207,4 +210,8 @@ fn memo_reset(path: &std::path::Path, lang: &str) {
     }
 
     println!("{}", language::get(lang, "RESET_SUCCESS"));  
+}
+fn open_repo() {
+    webbrowser::open("https://www.github.com/githubyoon/memo").unwrap();
+
 }
