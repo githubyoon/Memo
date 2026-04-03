@@ -86,7 +86,7 @@ fn main() {
                     }
                 }
                 Some("update") => {
-                    check_update();
+                    check_update(lang);
                 }
                 _ => {  // "lang"이 아니거나, 아예 인자가 없을 때
                     println!("{}", language::get(lang, "USAGE_SETTINGS"));
@@ -242,6 +242,7 @@ fn open_repo() {
     webbrowser::open("https://www.github.com/githubyoon/memo").unwrap();
 
 }
-fn check_update () {
-
+fn check_update (lang: &str) {
+    version();
+    println!("{}", language::get(lang, "ENTER_SERVER"));
 }

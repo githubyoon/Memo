@@ -5,7 +5,8 @@ pub const USAGE_ADD: &str = "Usage: memo add <text>";
 pub const USAGE_DELETE: &str = "Usage: memo delete <index>";
 
 // tab 한번 backspace 한번
-pub const USAGE: &str = "Usage:\n  memo add <text>\n  memo list\n  memo delete <index>\n  memo version\n  memo settings <setting>\n  memo reset\n  memo repo | github";
+pub const USAGE: &str = "Usage:\n  memo add <text>\n  memo list\n  memo delete <index>\n  memo version\n  memo settings <setting>\n  memo reset\n  memo repo | github\n  memo update";
+pub const ENTER_SERVER: &str = "Check the current version, visit https://githubyoon.github.io/Memo, and download the latest version if available.";
 
 pub const MEMO_ADD_FAIL: &str = "Failed to add memo";
 pub const MEMO_LIST_FAIL: &str = "Failed to list memos";
