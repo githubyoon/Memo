@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Memo Update</title>
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      margin-top: 100px;
+      background: #111;
+      color: #fff;
+    }
+    a {
+      color: #4da6ff;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Memo CLI</h1>
+  <p>Update Server is Running</p>
+
+  <p>
+    Latest Version: <span id="ver">Loading...</span>
+  </p>
+
+  <p>
+    <a href="https://github.com/githubyoon/Memo/releases/latest">
+      Download Latest Version
+    </a>
+  </p>
+
+  <script>
+    fetch("config.json")
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("ver").innerText = data.version;
+      })
+      .catch(() => {
+        document.getElementById("ver").innerText = "Unknown";
+      });
+  </script>
+</body>
+</html>

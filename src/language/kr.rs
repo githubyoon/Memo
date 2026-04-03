@@ -5,8 +5,8 @@ pub const CREATE_DIR_FAIL: &str = "폴더 생성에 실패했습니다.";
 pub const USAGE_ADD: &str = "사용법: memo add <내용>";
 pub const USAGE_DELETE: &str = "사용법: memo delete <번호>";
 
-// tab 한번 space 한번
-pub const USAGE: &str = "사용법:\n  memo add <내용>\n  memo list\n  memo delete <번호>\n  memo version\n  memo settings <설정>\n  memo reset\n    memo repo | github";
+// tab 한번 backspace 한번
+pub const USAGE: &str = "사용법:\n  memo add <내용>\n  memo list\n  memo delete <번호>\n  memo version\n  memo settings <설정>\n  memo reset\n  memo repo | github";
 
 pub const MEMO_ADD_FAIL: &str = "메모 추가 실패";
 pub const MEMO_LIST_FAIL: &str = "메모 목록 실패";

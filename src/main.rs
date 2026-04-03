@@ -85,6 +85,9 @@ fn main() {
                         }
                     }
                 }
+                Some("update") => {
+                    check_update();
+                }
                 _ => {  // "lang"이 아니거나, 아예 인자가 없을 때
                     println!("{}", language::get(lang, "USAGE_SETTINGS"));
                 }
@@ -127,20 +130,28 @@ fn get_lang() -> String {
 
     let memo_dir = Path::new(&home).join(".memo");
 
-    // 폴더 없으면 생성
-    fs::create_dir_all(&memo_dir).ok();
+    // 폴더 생성 (실패해도 무시)
+    let _ = fs::create_dir_all(&memo_dir);
 
     let lang_path = memo_dir.join("language.txt");
 
-    // 파일 없으면 기본값 생성
+    // 파일이 없으면 기본값 "kr"로 생성
     if !lang_path.exists() {
-        fs::write(&lang_path, "kr").ok();
+        let _ = fs::write(&lang_path, "kr");
     }
 
-    fs::read_to_string(&lang_path)
-        .unwrap_or("kr".to_string())
-        .trim()
-        .to_string()
+    // 파일 읽기 + 실패 시 기본값 "kr"
+    match fs::read_to_string(&lang_path) {
+        Ok(content) => {
+            let trimmed = content.trim();
+            if trimmed.is_empty() {
+                "kr".to_string()
+            } else {
+                trimmed.to_string()
+            }
+        }
+        Err(_) => "kr".to_string(),
+    }
 }
 
 fn get_arg(args: &[String], index: usize, msg: &str) -> String {
@@ -200,11 +211,27 @@ fn memo_delete(path: &Path, index: usize, lang: &str) -> io::Result<()> {
     Ok(())
 }
 fn version() {
-    let version = "Beta 0.5.4";
-    println!("Memo ({})", version);
+    let lang = get_lang();
+    let lang_str = lang.as_str();
+
+    let home = env::var("USERPROFILE")
+        .expect(language::get(lang_str, "USERPROFILE_NOT_FOUND"));
+
+    let memo_dir = Path::new(&home).join(".memo");
+    let version_path = memo_dir.join("version.txt");
+
+    // version.txt 파일을 읽어서 version 변수에 저장
+    let version = fs::read_to_string(&version_path)
+        .expect(language::get(lang_str, "VERSION_FILE_NOT_FOUND"));
+
+    // 필요하면 앞뒤 공백 제거 (보통 버전 파일에 개행이 있어서)
+    let version = version.trim().to_string();
+
+    println!("Memo: {}", version);   // 확인용 (나중에 지워도 됨)
+
 }
-fn memo_reset(path: &std::path::Path, lang: &str) {
-    if let Err(_) = std::fs::write(path, "[]") {
+fn memo_reset(path: &Path, lang: &str) {
+    if let Err(_) = fs::write(path, "[]") {
         println!("{}", language::get(lang, "RESET_FAIL"));
         return;
     }
@@ -213,5 +240,8 @@ fn memo_reset(path: &std::path::Path, lang: &str) {
 }
 fn open_repo() {
     webbrowser::open("https://www.github.com/githubyoon/memo").unwrap();
+
+}
+fn check_update () {
 
 }
