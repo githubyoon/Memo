@@ -211,21 +211,7 @@ fn memo_delete(path: &Path, index: usize, lang: &str) -> io::Result<()> {
     Ok(())
 }
 fn version() {
-    let lang = get_lang();
-    let lang_str = lang.as_str();
-
-    let home = env::var("USERPROFILE")
-        .expect(language::get(lang_str, "USERPROFILE_NOT_FOUND"));
-
-    let memo_dir = Path::new(&home).join(".memo");
-    let version_path = memo_dir.join("version.txt");
-
-    // version.txt 파일을 읽어서 version 변수에 저장
-    let version = fs::read_to_string(&version_path)
-        .expect(language::get(lang_str, "VERSION_FILE_NOT_FOUND"));
-
-    // 필요하면 앞뒤 공백 제거 (보통 버전 파일에 개행이 있어서)
-    let version = version.trim().to_string();
+    let version = "(Beta 0.6.4)";
 
     println!("Memo: {}", version);   // 확인용 (나중에 지워도 됨)
 
