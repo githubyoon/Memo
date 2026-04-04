@@ -26,16 +26,16 @@
   </p>
 
   <p>
-    <a href="https://github.com/githubyoon/Memo/releases/latest">
+    <a href="https://github.com/githubyoon/Memo/releases/latest/download/memo.exe">
       Download Latest Version
     </a>
   </p>
 
   <script>
-    fetch("config.json")
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById("ver").innerText = data.version;
+    fetch("version.txt")
+      .then(res => res.text())
+      .then(text => {
+        document.getElementById("ver").innerText = text.trim();
       })
       .catch(() => {
         document.getElementById("ver").innerText = "Unknown";
