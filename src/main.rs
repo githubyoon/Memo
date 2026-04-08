@@ -5,6 +5,9 @@ use std::fs;
 use std::env;
 use std::io;
 use std::io::stdin;
+use std::process::Command;
+
+const APP_VERSION: &str = "(Beta 0.7.0)";
 
 fn main() {
     let lang = get_lang();
@@ -17,13 +20,26 @@ fn main() {
     fs::create_dir_all(&memo_dir)
         .expect(language::get(lang, "CREATE_DIR_FAIL"));
 
+    let src_dir = memo_dir.join("src");
+    fs::create_dir_all(&src_dir)
+        .expect(language::get(lang, "CREATE_DIR_FAIL"));
+
+    let updater_dir = memo_dir.join("updater");
+    fs::create_dir_all(&src_dir)
+        .expect(language::get(lang, "CREATE_DIR_FAIL"));
+
     let path = memo_dir.join("Memo.json");
 
+    let version_path = memo_dir.join("version.txt");
 
     if !path.exists() {
         fs::write(&path, "[]")
             .expect(language::get(lang, "CREATE_FILE_FAIL"));
         println!("{}", language::get(lang, "CREATE_FILE_COMPLETE"));
+    }
+
+    if !version_path.exists() || APP_VERSION != "Unknown" {
+        let _ = fs::write(&version_path, APP_VERSION);
     }
 
     let args: Vec<String> = env::args().collect();
@@ -49,14 +65,12 @@ fn main() {
             memo_delete(&path, index, lang)
                 .expect(language::get(lang, "MEMO_DELETE_FAIL"));
         }
-        Some("version") => {
-            version();
-        }
-        Some("-v") => {
-            version();
-        }
-        Some("ver") => {
-            version();
+        Some("version") | Some("-v") | Some("ver") => {
+            let version_path = memo_dir.join("version.txt");
+            match fs::read_to_string(&version_path) {
+                Ok(version) => print_version(version.trim()),
+                Err(_) => print_version("Unknown"),
+            }
         }
         Some("settings") => {
             match args.get(2).map(|s| s.as_str()) {
@@ -210,11 +224,8 @@ fn memo_delete(path: &Path, index: usize, lang: &str) -> io::Result<()> {
     println!("{}", language::memo_deleted(lang, index));
     Ok(())
 }
-fn version() {
-    let version = "(Beta 0.6.4)";
-
-    println!("Memo: {}", version);   // 확인용 (나중에 지워도 됨)
-
+fn print_version(version: &str) {
+    println!("Memo: {}", version);
 }
 fn memo_reset(path: &Path, lang: &str) {
     if let Err(_) = fs::write(path, "[]") {
@@ -222,13 +233,18 @@ fn memo_reset(path: &Path, lang: &str) {
         return;
     }
 
-    println!("{}", language::get(lang, "RESET_SUCCESS"));  
+    println!("{}", language::get(lang, "RESET_SUCCESS"));
 }
 fn open_repo() {
     webbrowser::open("https://www.github.com/githubyoon/memo").unwrap();
 
 }
-fn check_update (lang: &str) {
-    version();
-    println!("{}", language::get(lang, "ENTER_SERVER"));
+fn check_update(lang: &str) {    
+    let home = env::var("USERPROFILE")
+        .expect(language::get(lang, "USERPROFILE_NOT_FOUND"));
+    let updater_exe = Path::new(&home).join(".memo\\updater\\updater.exe");
+    
+    let _ = Command::new(&updater_exe)
+        .spawn()
+        .expect(language::get(lang, "FAIL_TO_START"));
 }

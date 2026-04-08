@@ -3,6 +3,16 @@ name = "Memo"
 version = "0.0.0"
 edition = "2024"
 
+[[bin]]
+name = "Memo"
+path = "src/main.rs"
+
+[[bin]]
+name = "updater"
+path = "src/updater.rs"
+
 [dependencies]
+serde = { version = "1.0", features = ["derive"] }
 serde_json = "1"
 webbrowser = "0.8"
+reqwest = { version = "0.11", features = ["blocking", "json"] }

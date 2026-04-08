@@ -28,7 +28,7 @@ pub fn get(lang: &str, key: &str) -> &'static str {
             "RESET_SUCCESS" => kr::RESET_SUCCESS,
             "FAIL_TO_READ_INPUT" => kr::FAIL_TO_READ_INPUT,
             "WRONG_ANSWER" => kr::WRONG_ANSWER,
-            "ENTER_SERVER" => kr::ENTER_SERVER,
+            "FAIL_TO_START" => kr::FAIL_TO_START,
             _ => "unknown",
         },
         "en" => match key {
@@ -56,7 +56,7 @@ pub fn get(lang: &str, key: &str) -> &'static str {
             "RESET_SUCCESS" => en::RESET_SUCCESS,
             "FAIL_TO_READ_INPUT" => en::FAIL_TO_READ_INPUT,
             "WRONG_ANSWER" => en::WRONG_ANSWER,
-            "ENTER_SERVER" => en::ENTER_SERVER,
+            "FAIL_TO_START" => en::FAIL_TO_START,
             _ => "unknown",
         },
         _ => "unknown",

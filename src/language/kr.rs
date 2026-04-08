@@ -6,9 +6,7 @@ pub const USAGE_ADD: &str = "사용법: memo add <내용>";
 pub const USAGE_DELETE: &str = "사용법: memo delete <번호>";
 
 // tab 한번 backspace 한번
-pub const USAGE: &str = "사용법:\n  memo add <내용>\n  memo list\n  memo delete <번호>\n  memo version\n  memo settings <설정>\n  memo reset\n  memo repo | github\n  memo update";
-pub const ENTER_SERVER: &str = "현재 버전을 확인하고 https://githubyoon.github.io/Memo에 접속하여 최신버전이 있다면 다운로드 하세요";
-
+pub const USAGE: &str = "사용법:\n  memo add <내용>\n  memo list\n  memo delete <번호>\n  memo version\n  memo settings <설정>\n  memo reset\n  memo repo | github\n";
 pub const MEMO_ADD_FAIL: &str = "메모 추가 실패";
 pub const MEMO_LIST_FAIL: &str = "메모 목록 실패";
 pub const MEMO_DELETE_FAIL: &str = "메모 삭제 실패";
@@ -19,7 +17,7 @@ pub const NO_MEMO: &str = "메모가 없어요";
 
 pub const USERPROFILE_NOT_FOUND: &str = "USERPROFILE 환경변수 없음";
 
-pub const USAGE_SETTINGS: &str = "사용법 \n  memo settings language <언어>";
+pub const USAGE_SETTINGS: &str = "사용법 \n  memo settings language <언어>\n  memo update\n";
 
 pub const LANGUAGE_LIST: &str = "사용 가능 언어:\n    영어 <en>\n   한국어<kr>";
 
@@ -33,3 +31,5 @@ pub const RESET_FAIL: &str = "메모 초기화에 실패했습니다.";
 pub const RESET_SUCCESS: &str = "모든 메모가 삭제되었습니다.";
 pub const FAIL_TO_READ_INPUT: &str = "입력을 읽는 데 실패했습니다.";
 pub const WRONG_ANSWER: &str = "잘못된 입력입니다.";
+
+pub const FAIL_TO_START: &str = "업데이터를 실행하지 못했습니다";
