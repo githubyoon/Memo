@@ -7,7 +7,7 @@ use std::io;
 use std::io::stdin;
 use std::process::Command;
 
-const APP_VERSION: &str = "(Beta 0.7.0)";
+const APP_VERSION: &str = "(Beta 0.7.5)";
 
 fn main() {
     let lang = get_lang();
