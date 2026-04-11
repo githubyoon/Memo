@@ -242,7 +242,7 @@ fn open_repo() {
 fn check_update(lang: &str) {    
     let home = env::var("USERPROFILE")
         .expect(language::get(lang, "USERPROFILE_NOT_FOUND"));
-    let updater_exe = Path::new(&home).join(".memo\\updater\\updater.exe");
+    let updater_exe = Path::new(&home).join(".memo\\bin\\updater.exe");
     
     let _ = Command::new(&updater_exe)
         .spawn()

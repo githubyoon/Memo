@@ -24,7 +24,7 @@ pub const LANGUAGE_LIST: &str = "Available languages:\n    English <en>\n   Kore
 pub const SETTINGS_SAVED: &str = "Settings saved";
 pub const SETTINGS_SAVE_FAIL: &str = "Failed to save settings";
 pub const INVALID_LANG: &str = "Invalid language";
-pub const USAGE_SETTINGS_LANG: &str = "Usage: memo settings language [kr|en]";
+pub const USAGE_SETTINGS_LANG: &str = "Usage: memo settings [language | lang] [kr|en]";
 pub const CHECK_MEMO_RESET: &str = "Are you sure you want to delete all memos? (y/n)";
 pub const RESET_FAIL: &str = "Failed to reset memos.";
 pub const RESET_SUCCESS: &str = "All memos have been deleted.";
@@ -32,3 +32,26 @@ pub const FAIL_TO_READ_INPUT: &str = "Failed to read input.";
 pub const WRONG_ANSWER: &str = "Invalid input.";
 
 pub const FAIL_TO_START: &str = "Failed to start updater";
+
+// updater (en)
+
+pub const FAIL_TO_DOWNLOAD: &str = "Failed to download the new file";
+pub const FETCHED_LATEST_VERSION_MSG: &str = "Fetched the latest version information";
+
+pub const FETCH_VERSION_FAILED_USE_LOCAL_MSG: &str =
+    "Failed to fetch version info from server, using local version";
+
+pub const CURRENT_VERSION: &str = "Current version";
+pub const SERVER_VERSION: &str = "Server version";
+
+pub const ALREADY_LATEST_VERSION_MSG: &str = "Already up to date";
+
+pub const NEW_VERSION_AVAILABLE_MSG: &str = "A new version is available";
+
+pub const CONFIRM_UPDATE_MSG: &str = "Do you want to update? (y/n)";
+
+pub const FAILED_GET_DOWNLOAD_URL: &str =
+    "Failed to get download URL from GitHub";
+
+pub const DOWNLOADING_LATEST_FILE: &str = "Downloading the latest file...";
+pub const DOWNLOAD_COMPLETE: &str = "Download complete";

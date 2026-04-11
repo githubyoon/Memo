@@ -1,7 +1,7 @@
 @echo off
 
 :: ===============================
-:: 관리자 권한 요청
+:: Request Administrator Privileges
 :: ===============================
 >nul 2>&1 "%SYSTEMROOT%\system32\cacls.exe" "%SYSTEMROOT%\system32\config\system"
 
@@ -22,7 +22,7 @@ if '%errorlevel%' NEQ '0' (
     cd /d "%~dp0"
 
 :: ===============================
-:: 설정
+:: Configuration
 :: ===============================
 set REPO=githubyoon/Memo
 set INSTALL_DIR=%USERPROFILE%\.memo
@@ -32,71 +32,71 @@ set BIN_DIR=%INSTALL_DIR%\bin
 set UPDATER_URL=https://github.com/githubyoon/Memo/releases/download/updater/updater.exe
 
 :: ===============================
-:: memo URL 가져오기 (API)
+:: Fetch latest memo.exe URL
 :: ===============================
-echo 최신 memo.exe URL 가져오는 중...
+echo Fetching latest memo.exe URL...
 
 for /f "delims=" %%i in ('powershell -NoProfile -Command "(Invoke-RestMethod https://api.github.com/repos/%REPO%/releases/latest).assets | Where-Object {$_.name -like '*memo.exe*'} | Select-Object -ExpandProperty browser_download_url"') do set "URL=%%i"
 
 echo URL: %URL%
 
 if "%URL%"=="" (
-    echo [ERROR] memo.exe URL 못 찾음
+    echo [ERROR] Failed to find memo.exe URL
     pause
     exit /b
 )
 
 :: ===============================
-:: memo 다운로드
+:: Download memo.exe
 :: ===============================
-echo memo 다운로드 중...
+echo Downloading memo...
 curl -L -o memo.exe "%URL%"
 
 if not exist memo.exe (
-    echo [ERROR] 다운로드 실패
+    echo [ERROR] Download failed
     pause
     exit /b
 )
 
 :: ===============================
-:: 초기 실행 (폴더 생성)
+:: First run (initial setup)
 :: ===============================
-echo 초기 실행...
+echo Running initial setup...
 start "" /wait memo.exe
 
 :: ===============================
-:: 폴더 생성
+:: Create directories
 :: ===============================
 if not exist "%SRC_DIR%" mkdir "%SRC_DIR%"
 if not exist "%BIN_DIR%" mkdir "%BIN_DIR%"
 
 :: ===============================
-:: 이동
+:: Move file
 :: ===============================
 move /Y memo.exe "%SRC_DIR%\memo.exe"
 
 :: ===============================
-:: updater 다운로드
+:: Download updater
 :: ===============================
-echo updater 다운로드 중...
+echo Downloading updater...
 curl -L -o "%BIN_DIR%\updater.exe" "%UPDATER_URL%"
 
 :: ===============================
-:: PATH 등록
+:: Add to PATH
 :: ===============================
 echo %PATH% | find /I "%BIN_DIR%" >nul
 if %errorlevel% NEQ 0 (
     setx PATH "%BIN_DIR%;%PATH%" >nul
-    echo PATH 추가 완료 (새 콘솔에서 적용됨)
+    echo PATH updated (available in new terminal)
 ) else (
-    echo PATH 이미 존재
+    echo PATH already exists
 )
 
 :: ===============================
-:: 실행
+:: Run application
 :: ===============================
-echo 실행!
+echo Launching memo...
 start "" "%SRC_DIR%\memo.exe"
 
-echo 완료!
+echo Done!
 pause
